@@ -10,6 +10,8 @@ A modern Arabic app store website built with Flask, featuring a beautiful purple
 - Customizable site settings (colors, title)
 - Social media links management
 - RTL (Right-to-Left) support for Arabic
+- Enhanced sidebar with "Join Us" section
+- Performance optimizations (lazy loading, preload hints)
 
 ## Tech Stack
 - **Backend**: Flask with SQLAlchemy
@@ -46,7 +48,15 @@ The app runs on port 5000:
 python app.py
 ```
 
-## Recent Changes
-- Extracted and organized project files
-- Fixed port configuration (changed to 5000)
-- Cleaned up temporary files
+## Recent Changes (December 2025)
+- Enhanced sidebar with prominent "Join Us" section and call-to-action button
+- Improved admin dashboard with:
+  - Detailed statistics (games count, applications count)
+  - Quick action buttons
+  - Recent apps list
+  - Tips section
+- Performance optimizations:
+  - CSS preloading
+  - JavaScript deferred loading
+  - Image lazy loading support
+  - Combined font loading for faster render

@@ -5,12 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="theme-color" content="#1a0a2e">
     <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="preload" href="{{ url_for('static', filename='css/style.css') }}" as="style">
     <title>{{ settings.site_title }}{% block title_suffix %}{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&family=Almarai:wght@800&display=swap" rel="stylesheet">
     <style>
         :root {
             --child-background-color: #0a0014;
@@ -61,14 +62,38 @@
             </a>
         </div>
         <div class="sidebar-social">
-            <h4>تابعنا</h4>
+            <h4>انضم إلينا</h4>
+            <p class="join-us-text">تابعنا على منصات التواصل الاجتماعي للحصول على آخر التحديثات والتطبيقات الجديدة</p>
             <div class="social-icons">
                 {% for link in social_links %}
-                <a href="{{ link.url }}" target="_blank">
+                <a href="{{ link.url }}" target="_blank" title="{{ link.name }}">
                     <img src="{{ url_for('static', filename='images/' + link.icon) }}" alt="{{ link.name }}">
+                    <span class="social-name">{{ link.name }}</span>
                 </a>
                 {% endfor %}
             </div>
+            {% if social_links %}
+            <div class="join-us-cta">
+                <a href="{{ social_links[0].url }}" target="_blank" class="join-btn">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                        <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path>
+                    </svg>
+                    انضم الآن
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="left-sidebar">
+        <div class="left-sidebar-title">انضم إلينا</div>
+        <div class="left-sidebar-links">
+            {% for link in social_links %}
+            <a href="{{ link.url }}" target="_blank" class="left-social-link">
+                <img src="{{ url_for('static', filename='images/' + link.icon) }}" alt="{{ link.name }}">
+                <span>{{ link.name }}</span>
+            </a>
+            {% endfor %}
         </div>
     </div>
 
@@ -80,7 +105,7 @@
         {% endfor %}
     </footer>
 
-    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>
 </html>

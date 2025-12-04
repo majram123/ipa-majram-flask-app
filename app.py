@@ -129,7 +129,15 @@ def admin_logout():
 def admin_dashboard():
     apps_count = App.query.count()
     categories_count = Category.query.count()
-    return render_template('admin/dashboard.html', apps_count=apps_count, categories_count=categories_count)
+    games_count = App.query.join(Category).filter(Category.slug == 'games').count()
+    applications_count = App.query.join(Category).filter(Category.slug == 'applications').count()
+    recent_apps = App.query.order_by(App.id.desc()).limit(5).all()
+    return render_template('admin/dashboard.html', 
+                          apps_count=apps_count, 
+                          categories_count=categories_count,
+                          games_count=games_count,
+                          applications_count=applications_count,
+                          recent_apps=recent_apps)
 
 @app.route('/admin/apps')
 @login_required

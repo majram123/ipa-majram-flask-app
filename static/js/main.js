@@ -1,5 +1,5 @@
 // coding by oualid belaid ;
-// 2023-02-04
+// 2023-02-04 - Updated for performance
 
 // Sidebar functions
 window.openSidebar = function() {
@@ -21,6 +21,33 @@ window.closeSidebar = function() {
         document.body.style.overflow = 'auto';
     }
 };
+
+// Image lazy loading for better performance
+document.addEventListener('DOMContentLoaded', function() {
+    const lazyImages = document.querySelectorAll('img[data-src]');
+    
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    const image = entry.target;
+                    image.src = image.dataset.src;
+                    image.removeAttribute('data-src');
+                    imageObserver.unobserve(image);
+                }
+            });
+        });
+
+        lazyImages.forEach(function(image) {
+            imageObserver.observe(image);
+        });
+    } else {
+        // Fallback for older browsers
+        lazyImages.forEach(function(image) {
+            image.src = image.dataset.src;
+        });
+    }
+});
 
 // Close sidebar when clicking on a link
 $(document).ready(function() {

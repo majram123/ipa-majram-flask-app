@@ -9,68 +9,62 @@
     <span></span>
 </button>
 
-<div class="flot">
-    {% for link in social_links %}
-    <div>
-        <a href="{{ link.url }}">
-            <p>تابعنا على <br> {{ link.name }}</p>
-            <img src="{{ url_for('static', filename='images/' + link.icon) }}" alt="{{ link.name }}">
-        </a>
-    </div>
-    {% endfor %}
+<div class="logo-show search-logo">
+    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
 </div>
 
-<nav>
-    <ul>
-        <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
-        <li><a href="{{ url_for('index') }}">الرئيسية</a></li>
-        <li><a href="{{ url_for('all_apps') }}">الكل</a></li>
-        <li><a href="{{ url_for('search') }}" class="active">البحث</a></li>
-        <li><a href="{{ url_for('contact') }}">الدعم</a></li>
-    </ul>
-</nav>
-<div class="hr"></div>
-
-<main class="py-4">
-    <div class="section">
-        <div class="container">
-            <form action="{{ url_for('search') }}" method="GET">
-                <div class="form-group">
-                    <button type="submit"><img src="{{ url_for('static', filename='images/search.png') }}" alt="Search"></button>
-                    <input type="text" name="q" placeholder="ابحث عن لعبه او تطبيق موجود في الموقع" value="{{ query }}">
-                    <button type="button" class="menu-btn" onclick="openSidebar()"><img src="{{ url_for('static', filename='images/menu.png') }}" alt="Menu"></button>
+<div class="container search-container">
+    <h2 class="search-title">البحث</h2>
+    
+    <form action="{{ url_for('search') }}" method="GET" class="search-form">
+        <div class="search-input-wrapper">
+            <input type="text" name="q" placeholder="ابحث عن لعبة او تطبيق..." value="{{ query }}" class="search-input">
+            <button type="submit" class="search-submit-btn">
+                <svg viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+    </form>
+    
+    <div class="list">
+        {% for app in apps %}
+        <div class="child">
+            <div class="ele">
+                <a href="{{ app.download_link }}">تثبيت</a>
+                <button id="hide-desc"><img src="{{ url_for('static', filename='images/flesh.png') }}" alt=""></button>
+                <p>{{ app.name }}</p>
+                <img src="{{ app.image_url }}" alt="{{ app.name }}">
+            </div>
+            <div class="dsc">
+                <button id="show-desc">الوصف</button>
+                <div class="opct">
+                    <p>: الوصف</p>
+                    <p>{{ app.description }}</p>
+                    <a href="{{ app.download_link }}">تثبيت</a>
                 </div>
-            </form>
-            
-            <div class="list">
-                {% for app in apps %}
-                <div class="child">
-                    <div class="ele">
-                        <a href="{{ app.download_link }}">تثبيت</a>
-                        <button id="hide-desc"><img src="{{ url_for('static', filename='images/flesh.png') }}" alt=""></button>
-                        <p>{{ app.name }}</p>
-                        <img src="{{ app.image_url }}" alt="{{ app.name }}">
-                    </div>
-                    <div class="dsc">
-                        <button id="show-desc">الوصف</button>
-                        <div class="opct">
-                            <p>: الوصف</p>
-                            <p>{{ app.description }}</p>
-                            <a href="{{ app.download_link }}">تثبيت</a>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-                
-                {% if not apps and query %}
-                <p style="text-align: center; margin-top: 50px; color: #c9a8e8;">لم يتم العثور على نتائج لـ "{{ query }}"</p>
-                {% endif %}
-                
-                {% if not query %}
-                <p style="text-align: center; margin-top: 50px; color: #c9a8e8;">ابحث عن تطبيق أو لعبة</p>
-                {% endif %}
             </div>
         </div>
+        {% endfor %}
+        
+        {% if not apps and query %}
+        <div class="no-results">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="50" height="50">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+            </svg>
+            <p>لم يتم العثور على نتائج لـ "{{ query }}"</p>
+        </div>
+        {% endif %}
+        
+        {% if not query %}
+        <div class="search-placeholder">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="60" height="60">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+            </svg>
+            <p>ابحث عن تطبيق أو لعبة</p>
+            <span>اكتب اسم التطبيق أو اللعبة في مربع البحث</span>
+        </div>
+        {% endif %}
     </div>
-</main>
+</div>
 {% endblock %}
