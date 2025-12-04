@@ -85,18 +85,6 @@
         </div>
     </div>
 
-    <div class="left-sidebar">
-        <div class="left-sidebar-title">انضم إلينا</div>
-        <div class="left-sidebar-links">
-            {% for link in social_links %}
-            <a href="{{ link.url }}" target="_blank" class="left-social-link">
-                <img src="{{ url_for('static', filename='images/' + link.icon) }}" alt="{{ link.name }}">
-                <span>{{ link.name }}</span>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-
     {% block content %}{% endblock %}
     
     <footer class="anm">
