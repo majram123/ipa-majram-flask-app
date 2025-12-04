@@ -37,6 +37,27 @@
             box-shadow: 0 10px 40px rgba(155, 77, 202, 0.2);
         }
         
+        .login-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .login-logo img {
+            width: 120px;
+            height: auto;
+            filter: drop-shadow(0 0 20px rgba(155, 77, 202, 0.6));
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
         .login-header {
             text-align: center;
             margin-bottom: 30px;
@@ -141,6 +162,9 @@
 </head>
 <body>
     <div class="login-container">
+        <div class="login-logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        </div>
         <div class="login-header">
             <h1>لوحة التحكم</h1>
             <p>سجل دخولك للمتابعة</p>

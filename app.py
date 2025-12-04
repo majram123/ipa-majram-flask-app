@@ -195,6 +195,11 @@ def admin_dashboard():
                           applications_count=applications_count,
                           recent_apps=recent_apps)
 
+@app.route('/admin/features')
+@login_required
+def admin_features():
+    return render_template('admin/features.html')
+
 @app.route('/admin/apps')
 @login_required
 def admin_apps():
