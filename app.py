@@ -2,14 +2,22 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 import os
 import json
 import requests
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+# إنشاء مجلد الرفع إذا لم يكن موجوداً
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # مفاتيح reCAPTCHA (استخدم المفاتيح التجريبية من Google أو مفاتيحك الخاصة)
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'  # مفتاح تجريبي
@@ -32,6 +40,10 @@ def verify_recaptcha(token):
         return result.get('success', False)
     except:
         return False
+
+def allowed_file(filename):
+    """التحقق من امتداد الملف المسموح به"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -206,6 +218,33 @@ def admin_apps():
     apps = App.query.order_by(App.order).all()
     categories = Category.query.all()
     return render_template('admin/apps.html', apps=apps, categories=categories)
+
+@app.route('/admin/upload-image', methods=['POST'])
+@login_required
+def upload_image():
+    """رفع صورة وإرجاع رابطها"""
+    if 'image' not in request.files:
+        return jsonify({'error': 'لم يتم اختيار صورة'}), 400
+    
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'error': 'لم يتم اختيار صورة'}), 400
+    
+    if file and allowed_file(file.filename):
+        # إنشاء اسم ملف آمن مع طابع زمني
+        filename = secure_filename(file.filename)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        name, ext = os.path.splitext(filename)
+        filename = f"{name}_{timestamp}{ext}"
+        
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        # إرجاع الرابط المحلي للصورة
+        image_url = url_for('static', filename=f'uploads/{filename}', _external=True)
+        return jsonify({'success': True, 'url': image_url})
+    
+    return jsonify({'error': 'نوع الملف غير مسموح به. استخدم: png, jpg, jpeg, gif, webp'}), 400
 
 @app.route('/admin/apps/add', methods=['POST'])
 @login_required

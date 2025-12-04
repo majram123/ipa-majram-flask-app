@@ -60,7 +60,17 @@
             </div>
             <div class="form-group">
                 <label>رابط الصورة</label>
-                <input type="url" name="image_url" required placeholder="https://example.com/image.png">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="url" name="image_url" id="add_image_url" required placeholder="https://example.com/image.png" style="flex: 1;">
+                    <button type="button" class="upload-btn" onclick="document.getElementById('add_image_upload').click()">
+                        <svg fill="currentColor" viewBox="0 0 20 20" width="16" height="16">
+                            <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"></path>
+                            <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
+                        </svg>
+                        رفع صورة
+                    </button>
+                </div>
+                <input type="file" id="add_image_upload" accept="image/*" style="display: none;" onchange="uploadImage(this, 'add_image_url')">
             </div>
             <div class="form-group">
                 <label>رابط التحميل</label>
@@ -96,7 +106,17 @@
             </div>
             <div class="form-group">
                 <label>رابط الصورة</label>
-                <input type="url" name="image_url" id="edit_image_url" required>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="url" name="image_url" id="edit_image_url" required style="flex: 1;">
+                    <button type="button" class="upload-btn" onclick="document.getElementById('edit_image_upload').click()">
+                        <svg fill="currentColor" viewBox="0 0 20 20" width="16" height="16">
+                            <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"></path>
+                            <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
+                        </svg>
+                        رفع صورة
+                    </button>
+                </div>
+                <input type="file" id="edit_image_upload" accept="image/*" style="display: none;" onchange="uploadImage(this, 'edit_image_url')">
             </div>
             <div class="form-group">
                 <label>رابط التحميل</label>
@@ -129,3 +149,98 @@ function openEditModal(id, name, description, image_url, download_link, category
 }
 </script>
 {% endblock %}
+
+
+
+<script>
+function uploadImage(input, targetInputId) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    // التحقق من نوع الملف
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('نوع الملف غير مسموح به. استخدم: PNG, JPG, JPEG, GIF, WEBP');
+        return;
+    }
+    
+    // التحقق من حجم الملف (16MB max)
+    if (file.size > 16 * 1024 * 1024) {
+        alert('حجم الملف كبير جداً. الحد الأقصى 16 ميجابايت');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    // إظهار رسالة التحميل
+    const targetInput = document.getElementById(targetInputId);
+    const originalValue = targetInput.value;
+    targetInput.value = 'جاري رفع الصورة...';
+    targetInput.disabled = true;
+    
+    fetch('/admin/upload-image', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            targetInput.value = data.url;
+            targetInput.disabled = false;
+            // إظهار معاينة الصورة
+            showImagePreview(data.url, targetInputId);
+        } else {
+            alert('خطأ: ' + data.error);
+            targetInput.value = originalValue;
+            targetInput.disabled = false;
+        }
+    })
+    .catch(error => {
+        alert('حدث خطأ أثناء رفع الصورة');
+        console.error('Error:', error);
+        targetInput.value = originalValue;
+        targetInput.disabled = false;
+    });
+}
+
+function showImagePreview(url, inputId) {
+    const input = document.getElementById(inputId);
+    let preview = input.parentElement.querySelector('.image-preview');
+    
+    if (!preview) {
+        preview = document.createElement('img');
+        preview.className = 'image-preview';
+        preview.style.cssText = 'width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 2px solid rgba(155, 77, 202, 0.3);';
+        input.parentElement.appendChild(preview);
+    }
+    
+    preview.src = url;
+}
+</script>
+
+<style>
+.upload-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #9b4dca 0%, #4a1a6b 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.upload-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(155, 77, 202, 0.4);
+}
+
+.upload-btn svg {
+    fill: #fff;
+}
+</style>
