@@ -4,11 +4,34 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import json
+import requests
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24).hex()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# مفاتيح reCAPTCHA (استخدم المفاتيح التجريبية من Google أو مفاتيحك الخاصة)
+RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'  # مفتاح تجريبي
+RECAPTCHA_SECRET_KEY = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'  # مفتاح تجريبي
+
+def verify_recaptcha(token):
+    """التحقق من reCAPTCHA token"""
+    if not token:
+        return False
+    
+    try:
+        response = requests.post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            data={
+                'secret': RECAPTCHA_SECRET_KEY,
+                'response': token
+            }
+        )
+        result = response.json()
+        return result.get('success', False)
+    except:
+        return False
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -136,6 +159,12 @@ def admin_login():
     if current_user.is_authenticated:
         return redirect(url_for('admin_dashboard'))
     if request.method == 'POST':
+        # التحقق من CAPTCHA أولاً
+        recaptcha_response = request.form.get('g-recaptcha-response')
+        if not verify_recaptcha(recaptcha_response):
+            flash('فشل التحقق من أنك لست روبوت، حاول مرة أخرى', 'error')
+            return render_template('admin/login.html')
+        
         username = request.form.get('username')
         password = request.form.get('password')
         user = User.query.filter_by(username=username).first()

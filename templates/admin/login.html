@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -8,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         * {
             margin: 0;
@@ -78,6 +80,14 @@
             box-shadow: 0 0 15px rgba(155, 77, 202, 0.3);
         }
         
+        .captcha-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            transform: scale(0.95);
+            transform-origin: center;
+        }
+        
         .btn {
             width: 100%;
             padding: 15px;
@@ -94,6 +104,11 @@
         .btn:hover {
             box-shadow: 0 0 25px rgba(155, 77, 202, 0.5);
             transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
         .flash-message {
@@ -116,6 +131,12 @@
         .back-link:hover {
             color: #9b4dca;
         }
+        
+        @media (max-width: 480px) {
+            .captcha-container {
+                transform: scale(0.85);
+            }
+        }
     </style>
 </head>
 <body>
@@ -133,7 +154,7 @@
             {% endif %}
         {% endwith %}
         
-        <form method="POST">
+        <form method="POST" id="loginForm">
             <div class="form-group">
                 <label>اسم المستخدم</label>
                 <input type="text" name="username" required placeholder="أدخل اسم المستخدم">
@@ -142,10 +163,26 @@
                 <label>كلمة المرور</label>
                 <input type="password" name="password" required placeholder="أدخل كلمة المرور">
             </div>
+            
+            <div class="captcha-container">
+                <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+            </div>
+            
             <button type="submit" class="btn">تسجيل الدخول</button>
         </form>
         
         <a href="{{ url_for('index') }}" class="back-link">العودة للموقع</a>
     </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            var response = grecaptcha.getResponse();
+            if(response.length == 0) {
+                e.preventDefault();
+                alert('الرجاء التحقق من أنك لست روبوت');
+                return false;
+            }
+        });
+    </script>
 </body>
 </html>
