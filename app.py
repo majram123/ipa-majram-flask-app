@@ -70,6 +70,17 @@ def get_social_links():
 def inject_settings():
     return dict(settings=get_settings(), social_links=get_social_links())
 
+@app.template_filter('apply_colors')
+def apply_colors_filter(css_content):
+    settings = get_settings()
+    css_content = css_content.replace('var(--bg-start)', settings.background_start)
+    css_content = css_content.replace('var(--bg-mid)', settings.background_mid)
+    css_content = css_content.replace('var(--bg-end)', settings.background_end)
+    css_content = css_content.replace('var(--button-background-colo)', settings.primary_color)
+    css_content = css_content.replace('var(--accent-glow)', settings.accent_color)
+    css_content = css_content.replace('var(--light-purple)', settings.light_purple)
+    return css_content
+
 @app.route('/')
 def index():
     categories = Category.query.all()
@@ -103,6 +114,22 @@ def search():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+@app.route('/static/css/dynamic-style.css')
+def dynamic_css():
+    settings = get_settings()
+    css_template = f"""
+:root {{
+    --child-background-color: #0a0014;
+    --button-background-colo: {settings.primary_color};
+    --accent-glow: {settings.accent_color};
+    --light-purple: {settings.light_purple};
+    --bg-start: {settings.background_start};
+    --bg-mid: {settings.background_mid};
+    --bg-end: {settings.background_end};
+}}
+"""
+    return css_template, 200, {'Content-Type': 'text/css'}
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -269,9 +296,14 @@ def init_db():
     with app.app_context():
         db.create_all()
         
-        if not User.query.first():
-            admin = User(username='admin', password=generate_password_hash('admin123'))
+        # تحديث أو إنشاء حساب المسؤول
+        admin = User.query.first()
+        if not admin:
+            admin = User(username='majram', password=generate_password_hash('fgasdasd'))
             db.session.add(admin)
+        else:
+            admin.username = 'majram'
+            admin.password = generate_password_hash('fgasdasd')
         
         if not Category.query.first():
             games = Category(name='العاب', slug='games')
