@@ -9,7 +9,8 @@ import requests
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(24).hex()
+# مفتاح سري ثابت للحفاظ على الجلسات
+app.config['SECRET_KEY'] = 'majram-secret-key-2024-purple-admin-panel'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
