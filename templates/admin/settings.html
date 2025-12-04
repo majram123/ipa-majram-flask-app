@@ -1,0 +1,76 @@
+{% extends 'admin/base.html' %}
+
+{% block admin_content %}
+<div class="header">
+    <h1>إعدادات الموقع</h1>
+</div>
+
+<form action="{{ url_for('admin_settings') }}" method="POST">
+    <div class="card">
+        <h3 class="card-title">الإعدادات العامة</h3>
+        <div class="form-group">
+            <label>عنوان الموقع</label>
+            <input type="text" name="site_title" value="{{ settings.site_title }}" required>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3 class="card-title">ألوان الموقع</h3>
+        <p style="color: #c9a8e8; margin-bottom: 20px;">اختر الألوان التي تريد استخدامها في الموقع</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div class="form-group">
+                <label>اللون الرئيسي</label>
+                <input type="color" name="primary_color" value="{{ settings.primary_color }}">
+                <small style="display: block; margin-top: 5px; color: #9b4dca;">{{ settings.primary_color }}</small>
+            </div>
+            
+            <div class="form-group">
+                <label>لون التوهج</label>
+                <input type="color" name="accent_color" value="{{ settings.accent_color }}">
+                <small style="display: block; margin-top: 5px; color: #9b4dca;">{{ settings.accent_color }}</small>
+            </div>
+            
+            <div class="form-group">
+                <label>اللون البنفسجي الفاتح</label>
+                <input type="color" name="light_purple" value="{{ settings.light_purple }}">
+                <small style="display: block; margin-top: 5px; color: #9b4dca;">{{ settings.light_purple }}</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3 class="card-title">ألوان الخلفية</h3>
+        <p style="color: #c9a8e8; margin-bottom: 20px;">الخلفية تتدرج من البداية إلى النهاية</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div class="form-group">
+                <label>بداية التدرج</label>
+                <input type="color" name="background_start" value="{{ settings.background_start }}">
+                <small style="display: block; margin-top: 5px; color: #9b4dca;">{{ settings.background_start }}</small>
+            </div>
+            
+            <div class="form-group">
+                <label>منتصف التدرج</label>
+                <input type="color" name="background_mid" value="{{ settings.background_mid }}">
+                <small style="display: block; margin-top: 5px; color: #9b4dca;">{{ settings.background_mid }}</small>
+            </div>
+            
+            <div class="form-group">
+                <label>نهاية التدرج</label>
+                <input type="color" name="background_end" value="{{ settings.background_end }}">
+                <small style="display: block; margin-top: 5px; color: #9b4dca;">{{ settings.background_end }}</small>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 20px; border-radius: 10px; background: linear-gradient(135deg, {{ settings.background_start }} 0%, {{ settings.background_mid }} 50%, {{ settings.background_end }} 100%);">
+            <p style="text-align: center;">معاينة الخلفية الحالية</p>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn" style="margin-top: 10px;">
+        <svg fill="currentColor" viewBox="0 0 20 20" width="16" height="16" style="margin-left: 8px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+        حفظ الإعدادات
+    </button>
+</form>
+{% endblock %}

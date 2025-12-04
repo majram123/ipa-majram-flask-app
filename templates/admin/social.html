@@ -1,0 +1,122 @@
+{% extends 'admin/base.html' %}
+
+{% block admin_content %}
+<div class="header">
+    <h1>إدارة روابط التواصل الاجتماعي</h1>
+    <button class="btn" onclick="openModal('addModal')">
+        <svg fill="currentColor" viewBox="0 0 20 20" width="16" height="16" style="margin-left: 8px;"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+        إضافة رابط
+    </button>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>الأيقونة</th>
+                <th>الاسم</th>
+                <th>الرابط</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for link in links %}
+            <tr>
+                <td><img src="{{ url_for('static', filename='images/' + link.icon) }}" alt="{{ link.name }}" style="width: 40px; height: 40px;"></td>
+                <td>{{ link.name }}</td>
+                <td><a href="{{ link.url }}" target="_blank" style="color: #9b4dca;">{{ link.url[:40] }}...</a></td>
+                <td>
+                    <div class="actions">
+                        <button class="btn btn-success" onclick="openEditModal({{ link.id }}, '{{ link.name }}', '{{ link.url }}', '{{ link.icon }}')">تعديل</button>
+                        <a href="{{ url_for('admin_delete_social', id=link.id) }}" class="btn btn-danger" onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {% if not links %}
+    <p style="text-align: center; padding: 40px; color: #c9a8e8;">لا توجد روابط حالياً</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3 class="card-title">الأيقونات المتاحة</h3>
+    <p style="color: #c9a8e8; margin-bottom: 15px;">أسماء ملفات الأيقونات الموجودة في مجلد الصور:</p>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="text-align: center;">
+            <img src="{{ url_for('static', filename='images/1.png') }}" style="width: 40px; height: 40px;">
+            <p style="font-size: 12px; color: #9b4dca;">1.png</p>
+        </div>
+        <div style="text-align: center;">
+            <img src="{{ url_for('static', filename='images/2.png') }}" style="width: 40px; height: 40px;">
+            <p style="font-size: 12px; color: #9b4dca;">2.png</p>
+        </div>
+        <div style="text-align: center;">
+            <img src="{{ url_for('static', filename='images/4.png') }}" style="width: 40px; height: 40px;">
+            <p style="font-size: 12px; color: #9b4dca;">4.png</p>
+        </div>
+    </div>
+</div>
+
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>إضافة رابط جديد</h3>
+            <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
+        </div>
+        <form action="{{ url_for('admin_add_social') }}" method="POST">
+            <div class="form-group">
+                <label>اسم المنصة</label>
+                <input type="text" name="name" required placeholder="مثال: انستغرام">
+            </div>
+            <div class="form-group">
+                <label>الرابط</label>
+                <input type="url" name="url" required placeholder="https://instagram.com/...">
+            </div>
+            <div class="form-group">
+                <label>اسم ملف الأيقونة</label>
+                <input type="text" name="icon" required placeholder="مثال: 2.png">
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">إضافة</button>
+        </form>
+    </div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>تعديل الرابط</h3>
+            <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+        </div>
+        <form id="editForm" method="POST">
+            <div class="form-group">
+                <label>اسم المنصة</label>
+                <input type="text" name="name" id="edit_name" required>
+            </div>
+            <div class="form-group">
+                <label>الرابط</label>
+                <input type="url" name="url" id="edit_url" required>
+            </div>
+            <div class="form-group">
+                <label>اسم ملف الأيقونة</label>
+                <input type="text" name="icon" id="edit_icon" required>
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">حفظ التعديلات</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function openEditModal(id, name, url, icon) {
+    document.getElementById('editForm').action = '/admin/social/edit/' + id;
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_url').value = url;
+    document.getElementById('edit_icon').value = icon;
+    openModal('editModal');
+}
+</script>
+{% endblock %}

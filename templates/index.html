@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<button class="hamburger-menu" onclick="openSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<div class="logo-show">
+    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
+</div>
+
+<div class="container" style="padding: 0">
+    <div class="categores">
+        <h2>اختر القسم</h2>
+        <a href="{{ url_for('games') }}">العاب</a>
+        <a href="{{ url_for('applications') }}">تطبيقات</a>
+    </div>
+</div>
+{% endblock %}

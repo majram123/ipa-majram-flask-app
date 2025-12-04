@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title_suffix %} - الدعم{% endblock %}
+
+{% block content %}
+<button class="hamburger-menu" onclick="openSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<div class="flot">
+    {% for link in social_links %}
+    <div>
+        <a href="{{ link.url }}">
+            <p>تابعنا على <br> {{ link.name }}</p>
+            <img src="{{ url_for('static', filename='images/' + link.icon) }}" alt="{{ link.name }}">
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<nav>
+    <ul>
+        <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
+        <li><a href="{{ url_for('index') }}">الرئيسية</a></li>
+        <li><a href="{{ url_for('all_apps') }}">الكل</a></li>
+        <li><a href="{{ url_for('search') }}">البحث</a></li>
+        <li><a href="{{ url_for('contact') }}" class="active">الدعم</a></li>
+    </ul>
+</nav>
+<div class="hr"></div>
+
+<main class="py-4">
+    <div class="section">
+        <div class="container">
+            <div class="carr">
+                <h2>تواصل معنا</h2>
+                <p style="text-align: center; margin: 10px 0; color: #c9a8e8;">للتواصل والدعم الفني</p>
+                <div class="links">
+                    {% for link in social_links %}
+                    <a href="{{ link.url }}" target="_blank"><img src="{{ url_for('static', filename='images/' + link.icon) }}" alt="{{ link.name }}"></a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
