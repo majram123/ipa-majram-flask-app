@@ -15,6 +15,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+
+# إعدادات الجلسة
+app.config['SESSION_COOKIE_SECURE'] = False  # استخدم True في الإنتاج مع HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # ساعة واحدة
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 # إنشاء مجلد الرفع إذا لم يكن موجوداً
@@ -49,6 +56,9 @@ def allowed_file(filename):
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'admin_login'
+login_manager.login_message = 'يرجى تسجيل الدخول للوصول إلى هذه الصفحة'
+login_manager.login_message_category = 'error'
+login_manager.session_protection = 'strong'
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -182,8 +192,13 @@ def admin_login():
         password = request.form.get('password')
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
-            login_user(user)
-            return redirect(url_for('admin_dashboard'))
+            # تسجيل الدخول مع remember=True للحفاظ على الجلسة
+            login_user(user, remember=True, duration=None)
+            # استخدام next parameter إذا كان موجوداً
+            next_page = request.args.get('next')
+            if not next_page or not next_page.startswith('/'):
+                next_page = url_for('admin_dashboard')
+            return redirect(next_page)
         flash('اسم المستخدم أو كلمة المرور غير صحيحة', 'error')
     return render_template('admin/login.html')
 
