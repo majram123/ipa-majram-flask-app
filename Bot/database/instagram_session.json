@@ -1,0 +1,37 @@
+{
+    "uuids": {
+        "phone_id": "d3357fae-ff05-4d98-969a-eb24348c3718",
+        "uuid": "adaefa34-bb48-4d23-9aec-fe20aff7f0a4",
+        "client_session_id": "82dd8294-520f-4231-b115-0d4f485fc6bc",
+        "advertising_id": "e76e2089-11ec-41a1-b767-f8c8a4df69b8",
+        "android_device_id": "android-2f1da5af572d194b",
+        "request_id": "d3882079-952e-4694-a38c-2240a3f353b5",
+        "tray_session_id": "d4869aa0-6801-433c-a21a-d115cc00f839"
+    },
+    "mid": "aTXoWgAAAAF0RdVdr_Nluo5BwcVE",
+    "ig_u_rur": null,
+    "ig_www_claim": null,
+    "authorization_data": {
+        "ds_user_id": "77898739356",
+        "sessionid": "77898739356%3AtBWxM0EmI9kKrN%3A5%3AAYhsnrDTzG8Xa1vN3-w-k7TQOc7dNrjmc9uSMvv79w"
+    },
+    "cookies": {},
+    "last_login": 1765140582.7115612,
+    "device_settings": {
+        "app_version": "269.0.0.18.75",
+        "android_version": 26,
+        "android_release": "8.0.0",
+        "dpi": "480dpi",
+        "resolution": "1080x1920",
+        "manufacturer": "Apple",
+        "device": "iPhone14,5",
+        "model": "iPhone 14",
+        "cpu": "A15 Bionic",
+        "version_code": "314665256"
+    },
+    "user_agent": "Instagram 269.0.0.18.75 (iPhone14,5; iOS 18_0; en_IQ; en-IQ; scale=3.00; 1170x2532; 314665256)",
+    "country": "IQ",
+    "country_code": 1,
+    "locale": "en_IQ",
+    "timezone_offset": 10800
+}
